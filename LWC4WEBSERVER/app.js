@@ -137,7 +137,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/";
+/******/ 	__webpack_require__.p = "./";
 /******/
 /******/ 	var jsonpArray = window["webpackJsonp"] = window["webpackJsonp"] || [];
 /******/ 	var oldJsonpFunction = jsonpArray.push.bind(jsonpArray);
@@ -234,7 +234,7 @@ function tmpl($api, $cmp, $slotset, $ctx) {
     key: 3
   }, [api_element("img", {
     attrs: {
-      "src": "/resources/lwc.png"
+      "src": "./resources/lwc.png"
     },
     key: 2
   }, [])]), api_element("div", {
