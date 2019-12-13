@@ -18,9 +18,9 @@ app.use(express.static(path.join(__dirname + '/../', 'public')));
 
 // Serve SLDS from the node-modules package
 app.use('/slds', express.static(path.join(__dirname, '/../node_modules/@salesforce-ux/design-system/assets/')));
-app.use('/lwc', express.static(path.join(__dirname, '/../LWC4WEBSERVER/')));
+app.use('/', express.static(path.join(__dirname, '/../LWC4WEBSERVER/')));
 
-app.get('/', (req, res, next) => {
+app.get('/home', (req, res, next) => {
 	res.render('pages/home');
 });
 
