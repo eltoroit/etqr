@@ -18,14 +18,18 @@ app.use(express.static(path.join(__dirname + '/../', 'public')));
 
 // Make it secure
 app.use((req, res, next) => {
-	if (req.header('x-forwarded-proto') === 'https') {
-		// request was via https, so do no special handling
-		console.log('Using HTTPS');
+	if (isLocalhost) {
 		next();
 	} else {
-		// request was via http, so redirect to https
-		console.log('Redirecting to HTTPS');
-		res.redirect('https://' + req.headers.host + req.url);
+		if (req.header('x-forwarded-proto') === 'https') {
+			// request was via https, so do no special handling
+			console.log('Using HTTPS');
+			next();
+		} else {
+			// request was via http, so redirect to https
+			console.log('Redirecting to HTTPS');
+			res.redirect('https://' + req.headers.host + req.url);
+		}
 	}
 });
 
