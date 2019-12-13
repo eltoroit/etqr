@@ -16,6 +16,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname + '/../', 'public')));
 
+// Make it secure
+app.use((req, res, next) => {
+	if (req.header('x-forwarded-proto') === 'https') {
+		// request was via https, so do no special handling
+		console.log('Using HTTPS');
+		next();
+	} else {
+		// request was via http, so redirect to https
+		console.log('Redirecting to HTTPS');
+		res.redirect('https://' + req.headers.host + req.url);
+	}
+});
+
 // Serve SLDS from the node-modules package
 app.use('/slds', express.static(path.join(__dirname, '/../node_modules/@salesforce-ux/design-system/assets/')));
 app.use('/', express.static(path.join(__dirname, '/../LWC4WEBSERVER/')));
@@ -50,17 +63,5 @@ app.listen(PORT, () => {
 		console.log(`Listening on http://localhost:${PORT}/`);
 	} else {
 		console.log('Heroku server started');
-	}
-});
-
-app.use((req, res, next) => {
-	if (req.header('x-forwarded-proto') === 'https') {
-		// request was via https, so do no special handling
-		console.log('Using HTTPS');
-		next();
-	} else {
-		// request was via http, so redirect to https
-		console.log('Redirecting to HTTPS');
-		res.redirect('https://' + req.headers.host + req.url);
 	}
 });
