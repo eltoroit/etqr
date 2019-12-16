@@ -37,6 +37,50 @@ app.use((req, res, next) => {
 app.use('/slds', express.static(path.join(__dirname, '/../node_modules/@salesforce-ux/design-system/assets/')));
 app.use('/', express.static(path.join(__dirname, '/../LWC4WEBSERVER/')));
 
+app.post('/reportQRCode', (inReq, inRes, next) => {
+	console.log(inReq.body);
+
+	// Fire platform event
+	const jData = inReq.body;
+	const peData = JSON.stringify({
+		DTTM__c: jData.dttm,
+		RecordId__c: jData.copy1
+	});
+
+	const options = {
+		hostname: jData.serverUrl.replace('https://', ''),
+		port: 443,
+		path: '/services/data/v47.0/sobjects/QRScan__e',
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${jData.sessionId}`
+		}
+	};
+
+	const peReq = https.request(options, peRes => {
+		let data = '';
+
+		peRes.on('data', chunk => {
+			data += chunk;
+		});
+		peRes.on('end', () => {
+			console.log(`statusCode: ${peRes.statusCode}`);
+			const j = JSON.parse(data);
+			inRes.status(200);
+			console.log(data);
+			inRes.write(data);
+			inRes.end();
+		});
+	});
+	peReq.on('error', error => {
+		console.error(error);
+	});
+
+	peReq.write(peData);
+	peReq.end();
+});
+
 app.get('/home', (req, res, next) => {
 	res.render('pages/home');
 });
